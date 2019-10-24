@@ -20,7 +20,7 @@ class Admin::TrackersController < Admin::BaseController
 
   def create
     @tracker = Tracker.new(tracker_params)
-    @tracker.save
+    @tracker.save!
 
     redirect_to admin_trackers_path
   end
@@ -40,11 +40,12 @@ class Admin::TrackersController < Admin::BaseController
   end
 
   def destroy
-    @tracker.destroy
+    @tracker.destroy!
     redirect_to admin_trackers_path
   end
 
   private
+
     def set_tracker
       @tracker = Tracker.find(params[:id])
     end

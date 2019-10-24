@@ -9,17 +9,6 @@ class Budget
     translates :summary, touch: true
     translates :description, touch: true
     include Globalizable
-
-    class Translation
-      before_validation :sanitize_description
-
-      private
-
-        def sanitize_description
-          self.description = WYSIWYGSanitizer.new.sanitize(description)
-        end
-    end
-
     include Sanitizable
 
     belongs_to :budget
@@ -41,7 +30,7 @@ class Budget
     scope :published,         -> { enabled.where.not(kind: "drafting") }
 
     PHASE_KINDS.each do |phase|
-      define_singleton_method(phase) { find_by_kind(phase) }
+      define_singleton_method(phase) { find_by(kind: phase) }
     end
 
     def next_enabled_phase

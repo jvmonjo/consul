@@ -151,10 +151,10 @@ class Budget
       results = results.by_valuator(params[:valuator_id])                  if params[:valuator_id].present?
       results = results.by_valuator_group(params[:valuator_group_id])      if params[:valuator_group_id].present?
       results = results.by_admin(params[:administrator_id])                if params[:administrator_id].present?
+      results = results.search_by_title_or_id(params[:title_or_id].strip)  if params[:title_or_id]
       results = advanced_filters(params, results)                          if params[:advanced_filters].present?
-      results = search_by_title_or_id(params[:title_or_id].strip, results) if params[:title_or_id]
 
-      results = results.send(current_filter)                        if current_filter.present?
+      results = results.send(current_filter) if current_filter.present?
       results.includes(:heading, :group, :budget, administrator: :user, valuators: :user)
     end
 
@@ -200,11 +200,11 @@ class Budget
       results.where("budget_investments.id IN (?)", ids)
     end
 
-    def self.search_by_title_or_id(title_or_id, results)
-      return results.where(id: title_or_id) if title_or_id =~ /^[0-9]+$/
+    def self.search_by_title_or_id(title_or_id)
+      with_joins = with_translations(Globalize.fallbacks(I18n.locale))
 
-      results.with_translations(Globalize.fallbacks(I18n.locale)).
-        where("budget_investment_translations.title ILIKE ?", "%#{title_or_id}%")
+      with_joins.where(id: title_or_id).
+        or(with_joins.where("budget_investment_translations.title ILIKE ?", "%#{title_or_id}%"))
     end
 
     def searchable_values
@@ -256,7 +256,7 @@ class Budget
 
     def send_unfeasible_email
       Mailer.budget_investment_unfeasible(self).deliver_later
-      update(unfeasible_email_sent_at: Time.current)
+      update!(unfeasible_email_sent_at: Time.current)
     end
 
     def reason_for_not_being_selectable_by(user)
@@ -279,6 +279,7 @@ class Budget
       return :not_logged_in unless user
       return :organization  if user.organization?
       return :not_verified  unless user.can?(:vote, Budget::Investment)
+
       nil
     end
 

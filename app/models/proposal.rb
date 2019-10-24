@@ -96,7 +96,7 @@ class Proposal < ApplicationRecord
   end
 
   def publish
-    update(published_at: Time.current)
+    update!(published_at: Time.current)
     send_new_actions_notification_on_published
   end
 
@@ -183,7 +183,7 @@ class Proposal < ApplicationRecord
   end
 
   def votable_by?(user)
-    user && user.level_two_or_three_verified?
+    user&.level_two_or_three_verified?
   end
 
   def retired?
@@ -269,7 +269,7 @@ class Proposal < ApplicationRecord
   protected
 
     def set_responsible_name
-      if author && author.document_number?
+      if author&.document_number?
         self.responsible_name = author.document_number
       end
     end

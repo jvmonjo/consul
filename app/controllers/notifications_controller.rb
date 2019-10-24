@@ -1,6 +1,4 @@
 class NotificationsController < ApplicationController
-  include CustomUrlsHelper
-
   before_action :authenticate_user!
   skip_authorization_check
 
@@ -44,5 +42,4 @@ class NotificationsController < ApplicationController
         polymorphic_hierarchy_path(notification.linkable_resource)
       end
     end
-
 end

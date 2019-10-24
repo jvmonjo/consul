@@ -8,12 +8,12 @@ class Widget::Feed < ApplicationRecord
   end
 
   def setting
-    Setting.where(key: "homepage.widgets.feeds.#{kind}").first
+    Setting.find_by(key: "homepage.widgets.feeds.#{kind}")
   end
 
   def self.active
     KINDS.collect do |kind|
-      feed = find_or_create_by(kind: kind)
+      feed = find_or_create_by!(kind: kind)
       feed if feed.active?
     end.compact
   end
@@ -33,5 +33,4 @@ class Widget::Feed < ApplicationRecord
   def processes
     Legislation::Process.open.published.order("created_at DESC").limit(limit)
   end
-
 end

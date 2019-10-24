@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-
   include Verification
 
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable,
@@ -172,7 +171,7 @@ class User < ApplicationRecord
   end
 
   def verified_organization?
-    organization && organization.verified?
+    organization&.verified?
   end
 
   def official?
@@ -181,11 +180,12 @@ class User < ApplicationRecord
 
   def add_official_position!(position, level)
     return if position.blank? || level.blank?
-    update official_position: position, official_level: level.to_i
+
+    update! official_position: position, official_level: level.to_i
   end
 
   def remove_official_position!
-    update official_position: nil, official_level: 0
+    update! official_position: nil, official_level: 0
   end
 
   def has_official_email?
@@ -195,6 +195,7 @@ class User < ApplicationRecord
 
   def display_official_position_badge?
     return true if official_level > 1
+
     official_position_badge? && official_level == 1
   end
 
@@ -215,7 +216,7 @@ class User < ApplicationRecord
   end
 
   def erase(erase_reason = nil)
-    update(
+    update!(
       erased_at: Time.current,
       erase_reason: erase_reason,
       username: nil,
@@ -237,25 +238,26 @@ class User < ApplicationRecord
   end
 
   def take_votes_if_erased_document(document_number, document_type)
-    erased_user = User.erased.where(document_number: document_number)
-                             .where(document_type: document_type).first
+    erased_user = User.erased.find_by(document_number: document_number,
+                                      document_type: document_type)
     if erased_user.present?
       take_votes_from(erased_user)
-      erased_user.update(document_number: nil, document_type: nil)
+      erased_user.update!(document_number: nil, document_type: nil)
     end
   end
 
   def take_votes_from(other_user)
     return if other_user.blank?
+
     Poll::Voter.where(user_id: other_user.id).update_all(user_id: id)
     Budget::Ballot.where(user_id: other_user.id).update_all(user_id: id)
     Vote.where("voter_id = ? AND voter_type = ?", other_user.id, "User").update_all(voter_id: id)
     data_log = "id: #{other_user.id} - #{Time.current.strftime("%Y-%m-%d %H:%M:%S")}"
-    update(former_users_data_log: "#{former_users_data_log} | #{data_log}")
+    update!(former_users_data_log: "#{former_users_data_log} | #{data_log}")
   end
 
   def locked?
-    Lock.find_or_create_by(user: self).locked?
+    Lock.find_or_create_by!(user: self).locked?
   end
 
   def self.search(term)
@@ -277,6 +279,7 @@ class User < ApplicationRecord
 
   def password_required?
     return false if skip_password_validation
+
     super
   end
 
@@ -315,11 +318,11 @@ class User < ApplicationRecord
   def save_requiring_finish_signup
     begin
       self.registering_with_oauth = true
-      save(validate: false)
+      save!(validate: false)
     # Devise puts unique constraints for the email the db, so we must detect & handle that
     rescue ActiveRecord::RecordNotUnique
       self.email = nil
-      save(validate: false)
+      save!(validate: false)
     end
     true
   end
@@ -345,8 +348,8 @@ class User < ApplicationRecord
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     login = conditions.delete(:login)
-    where(conditions.to_hash).where(["lower(email) = ?", login.downcase]).first ||
-    where(conditions.to_hash).where(["username = ?", login]).first
+    where(conditions.to_hash).find_by(["lower(email) = ?", login.downcase]) ||
+    where(conditions.to_hash).find_by(["username = ?", login])
   end
 
   def self.find_by_manager_login(manager_login)
@@ -374,6 +377,7 @@ class User < ApplicationRecord
 
     def clean_document_number
       return unless document_number.present?
+
       self.document_number = document_number.gsub(/[^a-z0-9]+/i, "").upcase
     end
 
@@ -383,5 +387,4 @@ class User < ApplicationRecord
         maximum: User.username_max_length)
       validator.validate(self)
     end
-
 end

@@ -1,7 +1,6 @@
 require "rails_helper"
 
 describe "Admin budget investments" do
-
   let(:budget) { create(:budget) }
   let(:administrator) do
     create(:administrator, user: create(:user, username: "Ana", email: "ana@admins.org"))
@@ -16,7 +15,6 @@ describe "Admin budget investments" do
   end
 
   context "Feature flag" do
-
     before do
       Setting["process.budgets"] = nil
     end
@@ -24,7 +22,6 @@ describe "Admin budget investments" do
     scenario "Disabled with a feature flag" do
       expect { visit admin_budgets_path }.to raise_exception(FeatureFlags::FeatureDisabled)
     end
-
   end
 
   context "Load" do
@@ -49,11 +46,9 @@ describe "Admin budget investments" do
         visit admin_budget_budget_investments_path(0, investment)
       end.to raise_error ActiveRecord::RecordNotFound
     end
-
   end
 
   context "Index" do
-
     scenario "Displaying investments" do
       budget_investment = create(:budget_investment, budget: budget, cached_votes_up: 77)
       visit admin_budget_budget_investments_path(budget_id: budget.id)
@@ -105,7 +100,7 @@ describe "Admin budget investments" do
         expect(page).to have_content("Health")
       end
 
-      budget_investment3.update(administrator_id: admin.id)
+      budget_investment3.update!(administrator_id: admin.id)
       visit admin_budget_budget_investments_path(budget_id: budget.id)
 
       within("#budget_investment_#{budget_investment3.id}") do
@@ -518,8 +513,8 @@ describe "Admin budget investments" do
       investment1.set_tag_list_on(:valuation, "Teachers")
       investment2.set_tag_list_on(:valuation, "Hospitals")
 
-      investment1.save
-      investment2.save
+      investment1.save!
+      investment2.save!
 
       visit admin_budget_budget_investments_path(budget_id: budget.id)
 
@@ -534,8 +529,8 @@ describe "Admin budget investments" do
       investment1.set_tag_list_on(:valuation, "Roads")
       investment2.set_tag_list_on(:valuation, "Accessibility")
 
-      investment1.save
-      investment2.save
+      investment1.save!
+      investment2.save!
 
       visit admin_budget_budget_investments_path(budget_id: budget.id)
 
@@ -544,7 +539,7 @@ describe "Admin budget investments" do
     end
 
     scenario "Disable 'Calculate winner' button if incorrect phase" do
-      budget.update(phase: "reviewing_ballots")
+      budget.update!(phase: "reviewing_ballots")
 
       visit admin_budget_budget_investments_path(budget)
 
@@ -558,7 +553,7 @@ describe "Admin budget investments" do
 
       expect(page).to have_link "Calculate Winner Investments"
 
-      budget.update(phase: "accepting")
+      budget.update!(phase: "accepting")
 
       visit admin_budget_budget_investments_path(budget)
 
@@ -682,7 +677,6 @@ describe "Admin budget investments" do
       expect(page).not_to have_content("More hospitals")
 
       expect(page).to have_content("Selected")
-
     end
 
     scenario "Combination of select with text search", :js do
@@ -717,7 +711,6 @@ describe "Admin budget investments" do
       expect(page).not_to have_content("More hospitals")
 
       expect(page).to have_content("Selected")
-
     end
 
     scenario "Combination of checkbox with text search and checkbox", :js do
@@ -787,7 +780,6 @@ describe "Admin budget investments" do
       visit admin_budget_budget_investments_path(budget_id: not_finished_budget.id)
       expect(page).not_to have_content "See results"
     end
-
   end
 
   context "Search" do
@@ -961,7 +953,6 @@ describe "Admin budget investments" do
   end
 
   context "Show" do
-
     scenario "Show the investment details" do
       user = create(:user, username: "Rachel", email: "rachel@valuators.org")
       valuator = create(:valuator, user: user)
@@ -1062,7 +1053,6 @@ describe "Admin budget investments" do
   end
 
   context "Edit" do
-
     scenario "Change title, incompatible, description or heading" do
       budget_investment = create(:budget_investment, :incompatible)
       create(:budget_heading, group: budget_investment.group, name: "Barbate")
@@ -1202,7 +1192,7 @@ describe "Admin budget investments" do
     scenario "Adds existing valuation tags", :js do
       budget_investment1 = create(:budget_investment)
       budget_investment1.set_tag_list_on(:valuation, "Education, Health")
-      budget_investment1.save
+      budget_investment1.save!
 
       budget_investment2 = create(:budget_investment)
 
@@ -1240,7 +1230,7 @@ describe "Admin budget investments" do
     scenario "Changes valuation and user generated tags" do
       budget_investment = create(:budget_investment, tag_list: "Park")
       budget_investment.set_tag_list_on(:valuation, "Education")
-      budget_investment.save
+      budget_investment.save!
 
       visit admin_budget_budget_investment_path(budget_investment.budget, budget_investment)
 
@@ -1356,7 +1346,6 @@ describe "Admin budget investments" do
       expect(page).to have_content "Investment project updated succesfully."
       expect(page).to have_content("Milestone Tags: tag1, tag2")
     end
-
   end
 
   context "Selecting" do
@@ -1480,7 +1469,7 @@ describe "Admin budget investments" do
     end
 
     scenario "Show only selected text when budget is finished" do
-      budget.update(phase: "finished")
+      budget.update!(phase: "finished")
 
       visit admin_budget_budget_investments_path(budget)
 
@@ -1582,8 +1571,8 @@ describe "Admin budget investments" do
     scenario "Mark as visible to valuator", :js do
       investment1.valuators << valuator
       investment2.valuators << valuator
-      investment1.update(administrator: admin)
-      investment2.update(administrator: admin)
+      investment1.update!(administrator: admin)
+      investment2.update!(administrator: admin)
 
       visit admin_budget_budget_investments_path(budget)
       click_link "Advanced filters"
@@ -1605,13 +1594,13 @@ describe "Admin budget investments" do
     end
 
     scenario "Shows the correct investments to valuators" do
-      investment1.update(visible_to_valuators: true)
-      investment2.update(visible_to_valuators: false)
+      investment1.update!(visible_to_valuators: true)
+      investment2.update!(visible_to_valuators: false)
 
       investment1.valuators << valuator
       investment2.valuators << valuator
-      investment1.update(administrator: admin)
-      investment2.update(administrator: admin)
+      investment1.update!(administrator: admin)
+      investment2.update!(administrator: admin)
 
       login_as(valuator.user.reload)
       visit root_path
@@ -1627,12 +1616,12 @@ describe "Admin budget investments" do
     end
 
     scenario "Unmark as visible to valuator", :js do
-      budget.update(phase: "valuating")
+      budget.update!(phase: "valuating")
 
       investment1.valuators << valuator
       investment2.valuators << valuator
-      investment1.update(administrator: admin, visible_to_valuators: true)
-      investment2.update(administrator: admin, visible_to_valuators: true)
+      investment1.update!(administrator: admin, visible_to_valuators: true)
+      investment2.update!(administrator: admin, visible_to_valuators: true)
 
       visit admin_budget_budget_investments_path(budget)
 
@@ -1682,7 +1671,7 @@ describe "Admin budget investments" do
 
     scenario "Keeps the valuation tags", :js do
       investment1.set_tag_list_on(:valuation, %w[Possimpible Truthiness])
-      investment1.save
+      investment1.save!
 
       visit admin_budget_budget_investments_path(budget)
 
@@ -1698,7 +1687,6 @@ describe "Admin budget investments" do
   end
 
   context "Selecting csv" do
-
     scenario "Downloading CSV file" do
       create(:budget_investment, budget: budget)
 
@@ -1841,7 +1829,6 @@ describe "Admin budget investments" do
 
       expect(cookie_value).to eq("id,supports,admin,geozone,feasibility,valuation_finished," +
         "visible_to_valuators,selected,incompatible,author")
-
     end
 
     scenario "Select an investment when some columns are not displayed", :js do
@@ -1859,5 +1846,4 @@ describe "Admin budget investments" do
       end
     end
   end
-
 end

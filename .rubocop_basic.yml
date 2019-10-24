@@ -7,7 +7,6 @@ AllCops:
   DisplayCopNames: true
   DisplayStyleGuide: true
   Exclude:
-    - "db/migrate/**/*"
     - "db/schema.rb"
   # RuboCop has a bunch of cops enabled by default. This setting tells RuboCop
   # to ignore them, so only the ones explicitly set in this file are enabled.
@@ -29,6 +28,33 @@ Capybara/FeatureMethods:
     - xscenario
 
 FactoryBot/AttributeDefinedStatically:
+  Enabled: true
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
+Layout/EmptyLinesAroundAccessModifier:
+  Enabled: true
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: true
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: true
+
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: true
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: true
+
+Layout/ExtraSpacing:
+  Enabled: true
+
+Layout/SpaceAroundEqualsInParameterDefault:
   Enabled: true
 
 Layout/IndentationConsistency:
@@ -153,11 +179,37 @@ Rails/ApplicationJob:
 Rails/ApplicationRecord:
   Enabled: true
 
+Rails/CreateTableWithTimestamps:
+  Enabled: true
+  Exclude:
+    - "db/migrate/201[5-8]*"
+
 Rails/Date:
+  Enabled: true
+
+Rails/DynamicFindBy:
+  Enabled: true
+  Severity: refactor
+
+Rails/EnumUniqueness:
+  Enabled: true
+
+Rails/EnvironmentComparison:
+  Enabled: true
+
+Rails/FindBy:
+  Enabled: true
+
+Rails/FindEach:
   Enabled: true
 
 Rails/HttpPositionalArguments:
   Enabled: true
+
+Rails/NotNullColumn:
+  Enabled: true
+  Exclude:
+    - "db/migrate/201[5-7]*"
 
 Rails/OutputSafety:
   Enabled: true
@@ -177,9 +229,16 @@ Rails/RelativeDateConstant:
 Rails/RequestReferer:
   Enabled: true
 
+Rails/ReversibleMigration:
+  Enabled: true
+
 Rails/SafeNavigation:
   Enabled: true
   ConvertTry: true
+
+Rails/SaveBang:
+  Enabled: true
+  Severity: refactor
 
 Rails/TimeZone:
   Enabled: true
@@ -255,10 +314,16 @@ RSpec/ScatteredSetup:
 RSpec/VoidExpect:
   Enabled: true
 
+Security/Eval:
+  Enabled: true
+
 Style/BlockDelimiters:
   Enabled: true
 
 Style/PercentLiteralDelimiters:
+  Enabled: true
+
+Style/SafeNavigation:
   Enabled: true
 
 Style/StringLiterals:

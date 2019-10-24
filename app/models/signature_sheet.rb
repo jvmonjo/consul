@@ -28,10 +28,10 @@ class SignatureSheet < ApplicationRecord
 
       signature = signatures.where(document_number: document_number,
                                    date_of_birth: date_of_birth,
-                                   postal_code: postal_code).first_or_create
+                                   postal_code: postal_code).first_or_create!
       signature.verify
     end
-    update(processed: true)
+    update!(processed: true)
   end
 
   def parsed_required_fields_to_verify_groups
@@ -46,6 +46,7 @@ class SignatureSheet < ApplicationRecord
 
     def parse_date_of_birth(required_fields_to_verify)
       return required_fields_to_verify[1] if Setting.force_presence_date_of_birth?
+
       nil
     end
 

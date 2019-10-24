@@ -30,6 +30,7 @@ class Admin::BudgetsController < Admin::BaseController
 
   def calculate_winners
     return unless @budget.balloting_process?
+
     @budget.headings.each { |heading| Budget::Result.new(@budget, heading).delay.calculate_winners }
     redirect_to admin_budget_budget_investments_path(
                   budget_id: @budget.id,
@@ -66,7 +67,7 @@ class Admin::BudgetsController < Admin::BaseController
     elsif @budget.poll.present?
       redirect_to admin_budgets_path, alert: t("admin.budgets.destroy.unable_notice_polls")
     else
-      @budget.destroy
+      @budget.destroy!
       redirect_to admin_budgets_path, notice: t("admin.budgets.destroy.success_notice")
     end
   end
@@ -109,5 +110,4 @@ class Admin::BudgetsController < Admin::BaseController
     def load_valuators
       @valuators = Valuator.includes(:user).all.order(description: :asc).order("users.email ASC")
     end
-
 end

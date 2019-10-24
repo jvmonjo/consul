@@ -19,10 +19,6 @@ class Poll::Question::Answer < ApplicationRecord
 
   scope :visibles, -> { where(hidden: false) }
 
-  def description
-    self[:description]&.html_safe
-  end
-
   def self.order_answers(ordered_array)
     ordered_array.each_with_index do |answer_id, order|
       find(answer_id).update_attribute(:given_order, (order + 1))
@@ -77,12 +73,12 @@ class Poll::Question::Answer < ApplicationRecord
         answers = question.question_answers.visibles
                     .map { |a| count_positive_negative(a, true) - count_positive_negative(a, false) }
         is_most_voted = answers.none? { |a| a > total_votes_positive_negative }
-        update(most_voted: is_most_voted)
+        update!(most_voted: is_most_voted)
       when "prioritized"
         answers = question.question_answers.visibles
                     .map { |a| Poll::Answer.where(question_id: a.question, answer: a.title).sum(:value) }
         is_most_voted = answers.none? { |a| a > total_votes_prioritized }
-        update(most_voted: is_most_voted)
+        update!(most_voted: is_most_voted)
       else
         for_only_votes
       end
@@ -99,7 +95,6 @@ class Poll::Question::Answer < ApplicationRecord
       answers = question.question_answers.visibles
                   .map { |a| Poll::Answer.where(question_id: a.question, answer: a.title).count }
       is_most_voted = answers.none? { |a| a > total_votes }
-      update(most_voted: is_most_voted)
+      update!(most_voted: is_most_voted)
     end
-
 end

@@ -128,7 +128,6 @@ describe "Consul Schema" do
 
       expect(received_comments).to eq []
     end
-
   end
 
   describe "Proposals" do
@@ -196,7 +195,6 @@ describe "Consul Schema" do
       votes = response["data"]["proposal"]["votes_for"]["edges"]
       expect(votes.count).to eq(2)
     end
-
   end
 
   describe "Debates" do
@@ -262,7 +260,7 @@ describe "Consul Schema" do
       create(:comment, commentable: create(:proposal))
       create(:comment, commentable: create(:debate))
       create(:comment, commentable: create(:poll))
-      build(:comment, commentable: create(:budget_investment)).save(skip_validation: true)
+      build(:comment, commentable: create(:budget_investment)).save!(skip_validation: true)
 
       response = execute("{ comments { edges { node { commentable_type } } } }")
       received_commentables = extract_fields(response, "comments", "commentable_type")
@@ -408,7 +406,6 @@ describe "Consul Schema" do
   end
 
   describe "Proposal notifications" do
-
     it "does not include proposal notifications for hidden proposals" do
       visible_proposal = create(:proposal)
       hidden_proposal  = create(:proposal, :hidden)
@@ -455,7 +452,6 @@ describe "Consul Schema" do
 
       expect(received_proposals).to match_array ["Visible"]
     end
-
   end
 
   describe "Tags" do
@@ -528,11 +524,9 @@ describe "Consul Schema" do
 
       expect(received_tags).not_to include("Health")
     end
-
   end
 
   describe "Votes" do
-
     it "only returns votes from proposals, debates and comments" do
       create(:proposal, voters: [create(:user)])
       create(:debate, voters: [create(:user)])
@@ -640,7 +634,5 @@ describe "Consul Schema" do
 
       expect(Time.zone.parse(received_timestamps.first)).to eq Time.zone.parse("2017-12-31 9:00:00")
     end
-
   end
-
 end

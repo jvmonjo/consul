@@ -15,24 +15,6 @@ Performance/EndWith:
 Performance/StartWith:
   Enabled: true
 
-Rails/CreateTableWithTimestamps:
-  Enabled: true
-
-Rails/EnumUniqueness:
-  Enabled: true
-
-Rails/EnvironmentComparison:
-  Enabled: true
-
-Rails/Exit:
-  Enabled: true
-
-Rails/FindBy:
-  Enabled: true
-
-Rails/FindEach:
-  Enabled: true
-
 Rails/HasAndBelongsToMany:
   Enabled: true
 
@@ -42,22 +24,7 @@ Rails/HasManyOrHasOneDependent:
 Rails/InverseOf:
   Enabled: true
 
-Rails/NotNullColumn:
-  Enabled: true
-
-Rails/OutputSafety:
-  Enabled: true
-
-Rails/ReversibleMigration:
-  Enabled: true
-
-Rails/SaveBang:
-  Enabled: true
-
 Rails/SkipsModelValidations:
-  Enabled: true
-
-Security/Eval:
   Enabled: true
 
 Security/JSONLoad:

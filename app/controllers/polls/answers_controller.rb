@@ -1,5 +1,4 @@
 class Polls::AnswersController < ApplicationController
-
   load_and_authorize_resource :poll
   load_and_authorize_resource :question, class: "Poll::Question"
   authorize_resource :answer, class: "Poll::Answer"
@@ -7,7 +6,7 @@ class Polls::AnswersController < ApplicationController
   def create
     @question = Poll::Question.find_by(id: params[:id])
     if @question.votation_type.open? && !check_question_answer_exist
-      @question.question_answers.create(
+      @question.question_answers.create!(
         title: params[:answer],
         given_order: @question.question_answers.maximum(:given_order).to_i + 1,
         hidden: false
@@ -45,6 +44,7 @@ class Polls::AnswersController < ApplicationController
       exist = false
       @question.question_answers.each do |question_answer|
         break if exist
+
         exist = true if question_answer.title == params[:answer]
       end
       exist
@@ -66,5 +66,4 @@ class Polls::AnswersController < ApplicationController
         @answers = @question.question_answers.visibles
       end
     end
-
 end
