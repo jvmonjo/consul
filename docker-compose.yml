@@ -5,11 +5,11 @@ services:
 
     # use the preferred version of the official Postgres image
     # see https://hub.docker.com/_/postgres/
-    image: postgres:9.4.5
+    image: postgres:9.6
 
     # persist the database between containers by storing it in a volume
     volumes:
-      - docker-example-postgres:/var/lib/postgresql/data
+      - srv-captain--postgres-db:/var/lib/postgresql/data
 
   # service configuration for our dockerized Rails app
   app:
@@ -39,5 +39,5 @@ services:
     environment:
       - SSH_AUTH_SOCK=/tmp/agent.sock
 volumes:
-  docker-example-postgres: {}
+  srv-captain--postgres-db: {}
   bundle: {}
