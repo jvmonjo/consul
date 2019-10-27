@@ -37,3 +37,4 @@ public/system/
 /public/ckeditor_assets/
 
 .env
+docker-compose.yml

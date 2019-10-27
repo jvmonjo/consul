@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "rails", "5.0.7.2"
 
-gem 'dotenv-rails', , require: 'dotenv/rails-now'
+gem "crass", "~> 1.0.5"
 gem "acts-as-taggable-on", "~> 5.0.0"
 gem "acts_as_votable", "~> 0.11.1"
 gem "ahoy_matey", "~> 1.6.0"
