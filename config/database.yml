@@ -1,10 +1,8 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  #host: localhost
-  host: <%= ENV["POSTGRES_HOST"] %> #srv-captain--postgres-db<--the name of the db in the docker-compose
+  host: <%= ENV["POSTGRES_HOST"] %>
   pool: 5
-  port: 5432
   username: <%= ENV["POSTGRES_USERNAME"] %>
   password: <%= ENV["POSTGRES_PASSWORD"] %>
 
