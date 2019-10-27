@@ -605,6 +605,7 @@ DEPENDENCIES
   ckeditor (~> 4.2.3)
   cocoon (~> 1.2.9)
   coveralls (~> 0.8.22)
+  crass (~> 1.0.2)
   daemons (~> 1.2.4)
   dalli (~> 2.7.6)
   database_cleaner (~> 1.7.0)
@@ -677,4 +678,4 @@ DEPENDENCIES
   wkhtmltopdf-binary (~> 0.12.4)
 
 BUNDLED WITH
-   1.17.1
+   1.17.2
